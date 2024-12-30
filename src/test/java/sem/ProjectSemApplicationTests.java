@@ -1,4 +1,4 @@
-package com.SEM.project_sem;
+package sem;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
