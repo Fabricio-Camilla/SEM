@@ -3,20 +3,24 @@ package sem.modelo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import sem.controller.dto.EstacionamientoDTO;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 
 @Getter @Setter @NoArgsConstructor
 public class SEM {
 
-    private List<Estacionamiento> estacionamientos; //bdd
+    private LocalTime horaInicio =  LocalTime.of(8, 0);
+    private LocalTime horaFin =  LocalTime.of(20, 0);
 
-    public void registrarEstacionamiento(String patente) {
 
-        var estacionamiento = new Estacionamiento(patente, LocalDate.now());
-        this.estacionamientos.add(estacionamiento);
+    public void validarEstacionamiento(Estacionamiento estacionamiento) {
+        if(!estacionamiento.getFechaInicio().toLocalTime().isAfter(this.getHoraInicio())){
+            throw new RuntimeException();
+        }
 
     }
-
 }

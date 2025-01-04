@@ -1,20 +1,26 @@
 package sem.modelo;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jdk.jfr.Enabled;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor
+@Entity
 public class Estacionamiento {
 
-    private Long id;
+    @Id
     private String patente;
-    private LocalDate fechaInicio;
 
-    public Estacionamiento(String patente, LocalDate fechaInicio) {
+    private LocalDateTime fechaInicio;
+
+    public Estacionamiento(String patente, LocalDateTime fechaInicio) {
         this.fechaInicio = fechaInicio;
         this.patente = patente;
     }
-
 }
