@@ -1,10 +1,9 @@
 package sem.modelo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jdk.jfr.Enabled;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -19,8 +18,19 @@ public class Estacionamiento {
 
     private LocalDateTime fechaInicio;
 
-    public Estacionamiento(String patente, LocalDateTime fechaInicio) {
-        this.fechaInicio = fechaInicio;
+    @Enumerated(EnumType.STRING)
+    private EstadoEstacionamiento estado;
+
+    @Transient
+    private ZonaEstacionamiento zonaEstacionamiento;
+
+    public Estacionamiento(@NonNull String patente) {
+        this.fechaInicio = LocalDateTime.now();
         this.patente = patente;
+        this.estado = EstadoEstacionamiento.NOVIGENTE;
+    }
+
+    public void cambiarEstadoVigente() {
+        this.estado =  EstadoEstacionamiento.VIGENTE;
     }
 }

@@ -3,10 +3,8 @@ package sem.modelo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import sem.controller.dto.EstacionamientoDTO;
+import sem.modelo.exception.EstacionamientoCerradoException;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 
@@ -17,9 +15,9 @@ public class SEM {
     private LocalTime horaFin =  LocalTime.of(20, 0);
 
 
-    public void validarEstacionamiento(Estacionamiento estacionamiento) {
-        if(!estacionamiento.getFechaInicio().toLocalTime().isAfter(this.getHoraInicio())){
-            throw new RuntimeException();
+    public void validarEstacionamiento(Estacionamiento estacionamiento)  {
+        if(!estacionamiento.getFechaInicio().toLocalTime().isAfter(this.getHoraInicio())){ //encap
+            throw new EstacionamientoCerradoException();
         }
 
     }
