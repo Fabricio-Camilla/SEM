@@ -1,8 +1,6 @@
 package sem.modelo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -12,10 +10,12 @@ import lombok.Setter;
 @Entity
 public class Usuario {
 
-    @Id
-    private String userName;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(unique=true)
+    private String userName;
+
     private String userPassword;
 
     public Usuario(@NonNull String userName, @NonNull String userPassword) {
