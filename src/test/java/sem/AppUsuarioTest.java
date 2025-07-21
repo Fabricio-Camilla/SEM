@@ -5,10 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import sem.modelo.Estacionamiento;
-import sem.modelo.EstadoEstacionamiento;
+import sem.modelo.exception.EstacionamientoCerradoException;
 import sem.service.AppUserService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest
@@ -26,9 +30,14 @@ class AppUsuarioTest {
 
 	@Test
 	void contextLoads() {
-		user.iniciarEstacionamiento(estacionamiento);
+		estacionamiento.setFechaInicio(LocalDateTime.of(LocalDate.now(), LocalTime.of(21,0)));
 
-		assertEquals(estacionamiento.getEstado(), EstadoEstacionamiento.VIGENTE);
+		assertThrows(EstacionamientoCerradoException.class, () -> {
+			user.iniciarEstacionamiento(estacionamiento); //al estacionamiento service iniciarlo
+			//no tiene mas exception  de que esta vencido por que solo es para saber la cantidad
+			//de horas que estuvo en el lugar.
+			//puede escalar a eso
+		});
 	}
 
 
