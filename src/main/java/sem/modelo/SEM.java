@@ -16,9 +16,13 @@ public class SEM {
 
 
     public void validarEstacionamiento(Estacionamiento estacionamiento)  {
-        if(!estacionamiento.getFechaInicio().toLocalTime().isAfter(this.getHoraInicio())){ //encap
+        if(estacionamiento.getFechaInicio().toLocalTime().isAfter(this.getHoraInicio()) ||
+            estacionamiento.getFechaFin().toLocalTime().isBefore(this.getHoraFin())){ //encap
             throw new EstacionamientoCerradoException();
         }
+
+
+        estacionamiento.cambiarEstadoVigente();
 
     }
 }

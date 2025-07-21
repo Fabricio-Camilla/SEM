@@ -1,12 +1,16 @@
 package sem.modelo;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter
 public class Coordenada {
 
-    private Long latitud;
-    private Long longitud;
+    private Double latitud;
+    private Double longitud;
+
+    public Coordenada(Double latitud, Double longitud) {
+        this.latitud = latitud;
+        this.longitud = longitud;
+    }
 }
