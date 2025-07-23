@@ -15,14 +15,14 @@ public class SEM {
     private LocalTime horaFin =  LocalTime.of(20, 0);
 
 
-    public void validarEstacionamiento(Estacionamiento estacionamiento)  {
-        if(estacionamiento.getFechaInicio().toLocalTime().isAfter(this.getHoraInicio()) ||
-            estacionamiento.getFechaFin().toLocalTime().isBefore(this.getHoraFin())){ //encap
-            throw new EstacionamientoCerradoException();
-        }
-
-
-        estacionamiento.cambiarEstadoVigente();
-
-    }
+//    public void validarEstacionamiento(Estacionamiento estacionamiento)  {
+//        if(estacionamiento.getFechaInicio().toLocalTime().isAfter(this.getHoraInicio()) ||
+//            estacionamiento.getFechaFin().toLocalTime().isBefore(this.getHoraFin())){ //encap
+//            throw new EstacionamientoCerradoException();
+//        }
+//
+//
+//        estacionamiento.cambiarEstadoVigente();
+//
+//    }
 }
