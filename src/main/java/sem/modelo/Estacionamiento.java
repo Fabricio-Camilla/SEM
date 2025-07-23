@@ -1,35 +1,42 @@
 package sem.modelo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import sem.modelo.exception.HoraDeInicioInvalida;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor
 @Entity
 public class Estacionamiento {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idEstacion;
+    private Long idEstacion;
 
     @Column(nullable = false, unique = true)
     private String patente;
 
-    private LocalDateTime fechaInicio;
+    private LocalDate dia;
 
-    private LocalDateTime fechaFin;
+    @JsonFormat(pattern = "HH:mm")
+    private String  horaInicio;
+
+    @JsonFormat(pattern = "HH:mm")
+    private String horaFin;
 
     @Enumerated(EnumType.STRING)
     private EstadoEstacionamiento estado;
 
     @Transient
     private ZonaEstacionamiento zonaEstacionamiento;
-
+    @Transient
     private Coordenada ubicacionActual;
 
     /*
@@ -38,33 +45,45 @@ public class Estacionamiento {
     public Estacionamiento(@NonNull String patente) {
         this.patente = patente;
         this.zonaEstacionamiento = new ZonaEstacionamiento();
+        this.dia = LocalDate.now();
     }
 
     public void cambiarEstadoVigente() {
         this.estado =  EstadoEstacionamiento.VIGENTE;
     }
 
-    public void iniciarEstacionamiento(Coordenada coordActual) {
-        this.setFechaInicio(LocalDateTime.now());
-        this.setUbicacionActual(coordActual);
+    public void iniciarEstacionamiento() {
+        this.setHoraInicio(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+        //this.setUbicacionActual(coordActual);
     }
 
-    public void finalizarEstacionamiento() {
-        this.setFechaFin(LocalDateTime.now());
-    }
+    public String finalizarEstacionamiento() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm"); //todo:el cambio de hora un metodo
+        LocalTime horaFin = LocalTime.now();
+        LocalTime horaInicio = LocalTime.parse(this.horaInicio, formatter);
 
-    public LocalTime cantidadDeHorasEstacionado() {
-        var horaInicio = this.getFechaInicio();
-        var horaFin = this.getFechaFin();
-
-        if (horaFin.isBefore(horaInicio)) {
-            horaFin = horaFin.plusHours(24);
+        if(horaInicio.isAfter(horaFin)) {
+            throw new HoraDeInicioInvalida();
+        }else{
+            this.setHoraFin(horaFin.format(formatter));
+            return this.cantidadDeHorasEstacionado();
         }
-        Duration diferencia = Duration.between(horaInicio, horaFin);
+    }
 
-        long horas = diferencia.toHours();
-        long minutos = diferencia.toMinutes() % 60;
+    public String cantidadDeHorasEstacionado() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime horaInicio = LocalTime.parse(this.horaInicio, formatter);
+        LocalTime horaFin = LocalTime.parse(this.horaFin, formatter);
 
-        return LocalTime.of((int) horas, (int) minutos);
+        long minutos = ChronoUnit.MINUTES.between(horaInicio, horaFin);
+
+        if (minutos < 0) {
+            minutos += 24 * 60;
+        }
+        int horas = (int) (minutos / 60);
+        int minutosRestantes = (int) (minutos % 60);
+
+        // Retorna un string en formato HH:mm, con ceros delante si es necesario
+        return String.format("%02d:%02d", horas, minutosRestantes);
     }
 }
